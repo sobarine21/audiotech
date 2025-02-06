@@ -40,6 +40,15 @@ if uploaded_file is not None:
     if "text" in result:
         st.success("Transcription Complete:")
         st.write(result["text"])
+        
+        # Add download button
+        transcription_text = result["text"]
+        st.download_button(
+            label="Download Transcription",
+            data=transcription_text,
+            file_name="transcription.txt",
+            mime="text/plain"
+        )
     elif "error" in result:
         st.error(f"Error: {result['error']}")
     else:
