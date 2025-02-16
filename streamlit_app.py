@@ -66,4 +66,4 @@ if uploaded_file is not None:
 
 # Use a pipeline as a high-level helper
 pipe = pipeline("automatic-speech-recognition", model="openai/whisper-large")
-``` ▋
+
