@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import random
-from transformers import pipeline
 
 # Set up Hugging Face API details
 API_URLS = [
@@ -63,7 +62,3 @@ if uploaded_file is not None:
         st.error(f"Error: {result['error']}")
     else:
         st.warning("Unexpected response from the API.")
-
-# Use a pipeline as a high-level helper
-pipe = pipeline("automatic-speech-recognition", model="openai/whisper-large")
-
