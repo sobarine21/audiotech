@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import random
-from transformers import pipeline, AutoProcessor, AutoModelForSpeechSeq2Seq
+from transformers import pipeline
 
 # Set up Hugging Face API details
 API_URLS = [
@@ -66,7 +66,4 @@ if uploaded_file is not None:
 
 # Use a pipeline as a high-level helper
 pipe = pipeline("automatic-speech-recognition", model="openai/whisper-large")
-
-# Load model directly
-processor = AutoProcessor.from_pretrained("openai/whisper-large")
-model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-large")
+``` ▋
