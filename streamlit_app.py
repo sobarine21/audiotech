@@ -1,19 +1,29 @@
 import streamlit as st
 import requests
+import random
+from transformers import pipeline, AutoProcessor, AutoModelForSpeechSeq2Seq
 
 # Set up Hugging Face API details
-API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
+API_URLS = [
+    "https://api-inference.huggingface.co/models/openai/whisper-small",
+    "https://api-inference.huggingface.co/models/facebook/seamless-m4t-v2-large",
+    "https://api-inference.huggingface.co/models/openai/whisper-large-v2",
+    "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
+]
 
 # Retrieve Hugging Face API token from Streamlit secrets
 API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {API_TOKEN}"}
 
-# Function to send the audio file to the API
+# Function to send the audio file to a random API
 def transcribe_audio(file):
     try:
+        # Select a random API URL from the list
+        api_url = random.choice(API_URLS)
+        
         # Read the file as binary
         data = file.read()
-        response = requests.post(API_URL, headers=HEADERS, data=data)
+        response = requests.post(api_url, headers=HEADERS, data=data)
         if response.status_code == 200:
             return response.json()  # Return transcription
         else:
@@ -23,7 +33,7 @@ def transcribe_audio(file):
 
 # Streamlit UI
 st.title("🎙️ Audio Transcription Web App")
-st.write("Upload an audio file, and this app will transcribe it using OpenAI Whisper via Hugging Face API.")
+st.write("Upload an audio file, and this app will transcribe it using various models via Hugging Face API.")
 
 # File uploader
 uploaded_file = st.file_uploader("Upload your audio file (e.g., .wav, .flac, .mp3)", type=["wav", "flac", "mp3"])
@@ -53,3 +63,10 @@ if uploaded_file is not None:
         st.error(f"Error: {result['error']}")
     else:
         st.warning("Unexpected response from the API.")
+
+# Use a pipeline as a high-level helper
+pipe = pipeline("automatic-speech-recognition", model="openai/whisper-large")
+
+# Load model directly
+processor = AutoProcessor.from_pretrained("openai/whisper-large")
+model = AutoModelForSpeechSeq2Seq.from_pretrained("openai/whisper-large")
